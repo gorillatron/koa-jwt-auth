@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = require("jsonwebtoken");
 /*
- * export default auth
+ * export auth
  *
  * A koa Middleware that checks the Authorization header and verifies
  * it if it finds a bearer token in it.
@@ -29,22 +29,24 @@ exports.auth = (opts) => (ctx, next) => __awaiter(this, void 0, void 0, function
             ctx.claim = jsonwebtoken_1.verify(token, opts.secret);
             ctx[exports.authenticated] = true;
         }
-        catch (err) {
-            const name = err.name;
-            const message = name == "JsonWebTokenError" ? "invalid token" :
-                name == "TokenExpiredError" ? "expired token" :
-                    name == "NotBeforeError" ? "not before error" :
-                        "error with token";
-            throw opts.throws(ctx);
+        catch (error) {
+            throw opts.throws(ctx, error);
         }
     }
     return next();
 });
+/*
+ * export function isAuth
+ * Checks if the current request context is authenticated and has a claimed user.
+*/
+class NotAuthorizedError extends Error {
+}
+exports.NotAuthorizedError = NotAuthorizedError;
 exports.isAuth = (opts) => (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     if (ctx[exports.authenticated]) {
         return next();
     }
     else {
-        throw opts.throws(ctx);
+        throw opts.throws(ctx, new NotAuthorizedError("Request is not authenticated"));
     }
 });
