@@ -35,7 +35,7 @@ exports.auth = (opts) => (ctx, next) => __awaiter(this, void 0, void 0, function
                 name == "TokenExpiredError" ? "expired token" :
                     name == "NotBeforeError" ? "not before error" :
                         "error with token";
-            throw opts.throws();
+            throw opts.throws(ctx);
         }
     }
     return next();
@@ -45,6 +45,6 @@ exports.isAuth = (opts) => (ctx, next) => __awaiter(this, void 0, void 0, functi
         return next();
     }
     else {
-        throw opts.throws();
+        throw opts.throws(ctx);
     }
 });

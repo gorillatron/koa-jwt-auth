@@ -18,7 +18,7 @@ export const authenticated = Symbol("authenticated")
 
 export type AuthOpptions = {
   secret: string;
-  throws(...args):Error;
+  throws(ctx:koa.Context, ...args):Error;
 }
 
 export type RequestContext = koa.Context & {
@@ -53,7 +53,7 @@ export const auth = (opts:AuthOpptions):koa.Middleware =>
             name == "NotBeforeError"    ? "not before error" :
                                           "error with token"
         
-        throw opts.throws()
+        throw opts.throws(ctx)
         
       }
     }
@@ -69,7 +69,7 @@ export const auth = (opts:AuthOpptions):koa.Middleware =>
 */
 
 export type IsAuthOptions = {
-  throws(...args):Error
+  throws(ctx:koa.Context, ...args):Error;
 }
 
 export const isAuth = (opts:IsAuthOptions):koa.Middleware => 
@@ -80,7 +80,7 @@ export const isAuth = (opts:IsAuthOptions):koa.Middleware =>
       return next()
 
     } else {
-      throw opts.throws()
+      throw opts.throws(ctx)
     }
 
   }

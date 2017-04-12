@@ -9,7 +9,7 @@ describe("authentication", () => {
   class AuthorizationError extends Error {}
 
   const secret = "test secret"
-  const throws = () => new AuthorizationError()
+  const throws = (ctx:Koa.Context) => new AuthorizationError()
   const authMiddleware = auth({secret, throws})
 
 
