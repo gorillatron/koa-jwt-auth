@@ -1,12 +1,12 @@
 
 
-import * as koa               from 'koa'
-import {verify}               from 'jsonwebtoken'
+import * as koa                     from 'koa'
+import {verify, JsonWebTokenError}  from 'jsonwebtoken'
 
 
 
 /*
- * export default auth
+ * export auth
  * 
  * A koa Middleware that checks the Authorization header and verifies
  * it if it finds a bearer token in it.
@@ -16,16 +16,16 @@ import {verify}               from 'jsonwebtoken'
 
 export const authenticated = Symbol("authenticated")
 
-export type AuthOpptions = {
+export type AuthOptions = {
   secret: string;
-  throws(ctx:koa.Context, ...args):Error;
+  throws(ctx:koa.Context, error:JsonWebTokenError):Error;
 }
 
 export type RequestContext = koa.Context & {
   claim?: any;
 }
 
-export const auth = (opts:AuthOpptions):koa.Middleware =>
+export const auth = (opts:AuthOptions):koa.Middleware =>
   async (ctx:RequestContext, next) => {
     
     const authHeader = ctx.headers["Authorization"]
@@ -43,17 +43,9 @@ export const auth = (opts:AuthOpptions):koa.Middleware =>
         ctx[authenticated] = true
 
       } 
-      catch(err) {
-
-        const name = err.name
-
-        const message = 
-            name == "JsonWebTokenError" ? "invalid token" :
-            name == "TokenExpiredError" ? "expired token" :
-            name == "NotBeforeError"    ? "not before error" :
-                                          "error with token"
+      catch(error) {
         
-        throw opts.throws(ctx)
+        throw opts.throws(ctx, <JsonWebTokenError> error)
         
       }
     }
@@ -64,12 +56,14 @@ export const auth = (opts:AuthOpptions):koa.Middleware =>
 
 
 /*
- * export default function isAuth
+ * export function isAuth
  * Checks if the current request context is authenticated and has a claimed user.
 */
 
+export class NotAuthorizedError extends Error {}
+
 export type IsAuthOptions = {
-  throws(ctx:koa.Context, ...args):Error;
+  throws(ctx:koa.Context, error:NotAuthorizedError):Error;
 }
 
 export const isAuth = (opts:IsAuthOptions):koa.Middleware => 
@@ -80,7 +74,7 @@ export const isAuth = (opts:IsAuthOptions):koa.Middleware =>
       return next()
 
     } else {
-      throw opts.throws(ctx)
+      throw opts.throws(ctx, new NotAuthorizedError("Request is not authenticated"))
     }
 
   }
