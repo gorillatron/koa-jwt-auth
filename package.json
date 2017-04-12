@@ -1,0 +1,40 @@
+{
+  "name": "@gorillatron/koa-jwt-auth",
+  "version": "0.0.1RC1",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+
+    "build": "node_modules/.bin/tsc -d",
+    "test": "node_modules/.bin/jest",
+
+    "prebuild": "yarn run test",
+    "prepublish": "yarn run build"
+
+  },
+  "dependencies": {
+    "@types/jest": "^19.2.2",
+    "@types/jsonwebtoken": "^7.2.0",
+    "@types/koa": "^2.0.39",
+    "jsonwebtoken": "^7.3.0",
+    "koa": "^2.2.0"
+  },
+  "devDependencies": {
+    "jest": "^19.0.2",
+    "typescript": "^2.2.2"
+  },
+  "types": "./dist/index.d.ts",
+  "jest": {
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "<rootDir>/tests/preprocess.js"
+    },
+    "testMatch": [
+      "<rootDir>/tests/**/*.(ts|tsx)"
+    ]
+  }
+}
