@@ -28,7 +28,8 @@ export type RequestContext = koa.Context & {
 export const auth = (opts:AuthOptions):koa.Middleware =>
   async (ctx:RequestContext, next) => {
     
-    const authHeader = ctx.headers["Authorization"]
+    const authHeader = ctx.headers["Authorization"] || 
+                       ctx.headers["authorization"]
     
     if(!authHeader)
       return next()

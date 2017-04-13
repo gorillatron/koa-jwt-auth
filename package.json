@@ -1,6 +1,6 @@
 {
   "name": "@gorillatron/koa-jwt-auth",
-  "version": "0.0.2RC3",
+  "version": "0.0.2RC4",
   "main": "./dist/index.js",
   "license": "MIT",
   "scripts": {

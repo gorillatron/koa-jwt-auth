@@ -19,7 +19,8 @@ const jsonwebtoken_1 = require("jsonwebtoken");
 */
 exports.authenticated = Symbol("authenticated");
 exports.auth = (opts) => (ctx, next) => __awaiter(this, void 0, void 0, function* () {
-    const authHeader = ctx.headers["Authorization"];
+    const authHeader = ctx.headers["Authorization"] ||
+        ctx.headers["authorization"];
     if (!authHeader)
         return next();
     const elements = authHeader.split(' ');
