@@ -9,7 +9,7 @@ const router = new Router()
 
 
 router.use(auth({
-  secret,
+  secret: "bees-knees",
   throws: () => 
     new AuthorizationError("Your request authorization headers where not accepted.")
 }))
