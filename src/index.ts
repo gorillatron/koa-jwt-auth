@@ -5,6 +5,14 @@ import {verify, JsonWebTokenError}  from 'jsonwebtoken'
 
 
 
+
+/*
+ * Symbol for setting the context as authenticated
+*/
+
+export const authenticated = Symbol("authenticated")
+
+
 /*
  * export auth
  * 
@@ -13,8 +21,6 @@ import {verify, JsonWebTokenError}  from 'jsonwebtoken'
  * 
  * Populates IRequestContext.claim with the verified and decoded token
 */
-
-export const authenticated = Symbol("authenticated")
 
 export type AuthOptions = {
   secret: string;
@@ -37,7 +43,7 @@ export const auth = (opts:AuthOptions):koa.Middleware =>
     const elements = authHeader.split(' ')
     const [scheme, token] = elements
 
-    if (scheme === 'Bearer') {
+    if (scheme.toLowerCase() === 'bearer') {
       try {
 
         ctx.claim = verify(token, opts.secret)
@@ -46,7 +52,7 @@ export const auth = (opts:AuthOptions):koa.Middleware =>
       } 
       catch(error) {
         
-        throw opts.throws(ctx, <JsonWebTokenError> error)
+        throw opts.throws(ctx, error)
         
       }
     }

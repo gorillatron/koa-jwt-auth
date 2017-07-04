@@ -10,12 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const jsonwebtoken_1 = require("jsonwebtoken");
 /*
- * export auth
- *
- * A koa Middleware that checks the Authorization header and verifies
- * it if it finds a bearer token in it.
- *
- * Populates IRequestContext.claim with the verified and decoded token
+ * Symbol for setting the context as authenticated
 */
 exports.authenticated = Symbol("authenticated");
 exports.auth = (opts) => (ctx, next) => __awaiter(this, void 0, void 0, function* () {
@@ -25,7 +20,7 @@ exports.auth = (opts) => (ctx, next) => __awaiter(this, void 0, void 0, function
         return next();
     const elements = authHeader.split(' ');
     const [scheme, token] = elements;
-    if (scheme === 'Bearer') {
+    if (scheme.toLowerCase() === 'bearer') {
         try {
             ctx.claim = jsonwebtoken_1.verify(token, opts.secret);
             ctx[exports.authenticated] = true;
